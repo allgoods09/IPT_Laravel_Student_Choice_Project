@@ -1,0 +1,144 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use App\Models\Category;
+use App\Models\Log;
+use App\Models\Product;
+use App\Models\Sale;
+use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
+use App\Mail\ReportMailable;
+
+class ReportController extends Controller
+{
+    public function index()
+    {
+        $users = User::orderBy('name')->get();
+        return view('reports.index', compact('users'));
+    }
+
+    public function show(string $type, Request $request)
+    {
+        $month = $request->get('month') ?? now()->format('Y-m');
+        $monthStart = Carbon::parse($month)->startOfMonth();
+        $monthEnd = Carbon::parse($month)->endOfMonth();
+
+        switch ($type) {
+            case 'sales':
+                $data = Sale::with('product')
+                    ->whereBetween('sale_date', [$monthStart, $monthEnd])
+                    ->orderBy('sale_date', 'desc')
+                    ->get();
+                break;
+            case 'products':
+                $data = Product::with('category')
+                    ->where('status', 'Active')
+                    ->orderBy('stock_quantity')
+                    ->get();
+                break;
+            case 'categories':
+                $data = Category::where('status', 'Active')
+                    ->withCount('products')
+                    ->orderBy('name')
+                    ->get();
+                break;
+            case 'logs':
+                $data = Log::whereBetween('created_at', [$monthStart, $monthEnd])
+                    ->orderBy('created_at', 'desc')
+                    ->get();
+                break;
+            default:
+                abort(404, 'Report type not found.');
+        }
+
+        $users = User::orderBy('name')->get();
+        return view("reports.{$type}", compact('data', 'month', 'type', 'users'));
+    }
+
+    public function pdf(string $type, Request $request)
+    {
+        $month = $request->get('month') ?? now()->format('Y-m');
+        $monthStart = Carbon::parse($month)->startOfMonth();
+        $monthEnd = Carbon::parse($month)->endOfMonth();
+
+        switch ($type) {
+            case 'sales':
+                $data = Sale::with('product')
+                    ->whereBetween('sale_date', [$monthStart, $monthEnd])
+                    ->orderBy('sale_date', 'desc')
+                    ->get();
+                break;
+            case 'products':
+                $data = Product::with('category')
+                    ->where('status', 'Active')
+                    ->orderBy('stock_quantity')
+                    ->get();
+                break;
+            case 'categories':
+                $data = Category::where('status', 'Active')
+                    ->withCount('products')
+                    ->orderBy('name')
+                    ->get();
+                break;
+            case 'logs':
+                $data = Log::whereBetween('created_at', [$monthStart, $monthEnd])
+                    ->orderBy('created_at', 'desc')
+                    ->get();
+                break;
+            default:
+                abort(404, 'Report type not found.');
+        }
+
+        $pdf = Pdf::loadView("reports.{$type}-pdf", compact('data', 'month', 'type'));
+        return $pdf->download("{$type}_report_{$month}.pdf");
+    }
+
+    public function email(string $type, int $userId, Request $request)
+    {
+        $user = User::findOrFail($userId);
+        $month = $request->get('month') ?? now()->format('Y-m');
+        $monthStart = Carbon::parse($month)->startOfMonth();
+        $monthEnd = Carbon::parse($month)->endOfMonth();
+
+        // Same data query as pdf
+        switch ($type) {
+            case 'sales':
+                $data = Sale::with('product')
+                    ->whereBetween('sale_date', [$monthStart, $monthEnd])
+                    ->orderBy('sale_date', 'desc')
+                    ->get();
+                break;
+            case 'products':
+                $data = Product::with('category')
+                    ->where('status', 'Active')
+                    ->orderBy('stock_quantity')
+                    ->get();
+                break;
+            case 'categories':
+                $data = Category::where('status', 'Active')
+                    ->withCount('products')
+                    ->orderBy('name')
+                    ->get();
+                break;
+            case 'logs':
+                $data = Log::whereBetween('created_at', [$monthStart, $monthEnd])
+                    ->orderBy('created_at', 'desc')
+                    ->get();
+                break;
+            default:
+                abort(404);
+        }
+
+        $pdf = Pdf::loadView("reports.{$type}-pdf", compact('data', 'month', 'type'));
+        $pdfContent = $pdf->output();
+
+        \Illuminate\Support\Facades\Mail::to($user)->send(new \App\Mail\ReportMailable($pdfContent, ucfirst($type) . ' Report - ' . Carbon::parse($month)->format('F Y'), $type));
+
+        return back()->with('success', 'Report emailed to ' . $user->name);
+    }
+}

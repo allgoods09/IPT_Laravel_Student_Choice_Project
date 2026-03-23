@@ -1,0 +1,96 @@
+
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use App\Models\Category;
+use App\Models\Log;
+use App\Models\Product;
+use App\Models\Sale;
+use Barryvdh\DomPDF\Facade\Pdf;
+
+class ReportController extends Controller
+{
+    public function index()
+    {
+        return view('reports.index');
+    }
+
+    public function show(string $type, Request $request)
+    {
+        $month = $request->get('month') ?? now()->format('Y-m');
+        $monthStart = Carbon::parse($month)->startOfMonth();
+        $monthEnd = Carbon::parse($month)->endOfMonth();
+
+        switch ($type) {
+            case 'sales':
+                $data = Sale::with('product')
+                    ->whereBetween('sale_date', [$monthStart, $monthEnd])
+                    ->orderBy('sale_date', 'desc')
+                    ->get();
+                break;
+            case 'products':
+                $data = Product::with('category')
+                    ->where('status', 'Active')
+                    ->orderBy('stock_quantity')
+                    ->get();
+                break;
+            case 'categories':
+                $data = Category::where('status', 'Active')
+                    ->withCount('products')
+                    ->orderBy('name')
+                    ->get();
+                break;
+            case 'logs':
+                $data = Log::whereBetween('created_at', [$monthStart, $monthEnd])
+                    ->orderBy('created_at', 'desc')
+                    ->get();
+                break;
+            default:
+                abort(404);
+        }
+
+        return view("reports.{$type}", compact('data', 'month', 'type'));
+    }
+
+    public function pdf(string $type, Request $request)
+    {
+        $month = $request->get('month') ?? now()->format('Y-m');
+        $monthStart = Carbon::parse($month)->startOfMonth();
+        $monthEnd = Carbon::parse($month)->endOfMonth();
+
+        switch ($type) {
+            case 'sales':
+                $data = Sale::with('product')
+                    ->whereBetween('sale_date', [$monthStart, $monthEnd])
+                    ->orderBy('sale_date', 'desc')
+                    ->get();
+                break;
+            case 'products':
+                $data = Product::with('category')
+                    ->where('status', 'Active')
+                    ->orderBy('stock_quantity')
+                    ->get();
+                break;
+            case 'categories':
+                $data = Category::where('status', 'Active')
+                    ->withCount('products')
+                    ->orderBy('name')
+                    ->get();
+                break;
+            case 'logs':
+                $data = Log::whereBetween('created_at', [$monthStart, $monthEnd])
+                    ->orderBy('created_at', 'desc')
+                    ->get();
+                break;
+            default:
+                abort(404);
+        }
+
+        $pdf = Pdf::loadView("reports.{$type}-pdf", compact('data', 'month', 'type'));
+        return $pdf->download("{$type}_report_{$month}.pdf");
+    }
+}
+
