@@ -9,8 +9,7 @@
         {{-- Search --}}
         <form method="GET" action="{{ route('logs.index') }}" class="flex flex-wrap gap-3 mb-6">
             <input type="text" name="search" placeholder="Search logs..."
-                   value="{{ request('search') ?? '' }}" class="max-w-xs">
-
+                   value="{{ request('search') ?? '' }}" class="max-w-xs text-base rounded-md border border-slate-300 focus:ring focus:ring-indigo-200 focus:border-indigo-500">
             <button type="submit" class="btn-primary px-4 py-2 rounded-xl text-sm font-semibold">
                 Search
             </button>

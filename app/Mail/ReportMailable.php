@@ -16,6 +16,9 @@ class ReportMailable extends Mailable
     public $pdfContent;
     public $subject;
     public $type;
+    public $data;
+    public $month;
+
 
     public function __construct($pdfContent, $subject, $type = 'report', $data = [], $month = null)
     {

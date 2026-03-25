@@ -6,12 +6,12 @@
         <div class="flash-error mb-5">{{ $errors->first() }}</div>
     @endif
 
-    <div class="max-w-xl">
+    <div class="max-w-xl mx-auto">
         <div class="card p-8">
             <form method="POST" action="{{ route('sales.store') }}" class="space-y-5" id="saleForm">                @csrf
                 <div>
                     <label class="input-label">Product *</label>
-                    <select name="product_id" id="productSelect" class="text-input" onchange="updatePrice()" required>
+                    <select name="product_id" id="productSelect" class="text-input w-full px-4 py-3 text-base rounded-md border border-slate-300 focus:ring focus:ring-indigo-200 focus:border-indigo-500"" onchange="updatePrice()" required>
                         <option value="">— Select Product —</option>
                         @foreach ($products as $p)
                             <option value="{{ $p->id }}" 
@@ -31,12 +31,12 @@
 
                 <div>
                     <label class="input-label">Quantity *</label>
-                    <input type="number" name="quantity" id="quantityInput" class="text-input" min="1" placeholder="1" value="{{ old('quantity') }}" oninput="updateTotal()" required>
+                    <input type="number" name="quantity" id="quantityInput" class="text-input w-full px-4 py-3 text-base rounded-md border border-slate-300 focus:ring focus:ring-indigo-200 focus:border-indigo-500" min="1" placeholder="1" value="{{ old('quantity') }}" oninput="updateTotal()" required>
                 </div>
 
                 <div>
                     <label class="input-label">Payment Method *</label>
-                    <select name="payment_method" class="text-input" required>
+                    <select name="payment_method" class="text-input w-full px-4 py-3 text-base rounded-md border border-slate-300 focus:ring focus:ring-indigo-200 focus:border-indigo-500" required>
                         <option value="">— Select —</option>
                         @foreach (['Cash','GCash','PayMaya','Credit Card','Debit Card','Bank Transfer'] as $pm)
                             <option value="{{ $pm }}" {{ old('payment_method') == $pm ? 'selected' : '' }}>{{ $pm }}</option>

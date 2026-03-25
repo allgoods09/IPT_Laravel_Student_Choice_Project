@@ -25,7 +25,7 @@
         {{-- Filters --}}
         <form method="GET" action="{{ route('products.index') }}" class="flex flex-wrap gap-3 mb-6">
             <input type="text" name="search" placeholder="Search products..."
-                   value="{{ $search }}" class="max-w-xs">
+                   value="{{ $search }}" class="max-w-xs text-base rounded-md border border-slate-300 focus:ring focus:ring-indigo-200 focus:border-indigo-500">
 
             <select name="category" style="width:auto; padding:10px 14px;">
                 <option value="">All Categories</option>

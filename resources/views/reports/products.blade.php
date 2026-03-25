@@ -39,12 +39,13 @@
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700">{{ $product->category->name ?? 'Uncategorized' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-slate-900 text-right">{{ $product->stock_quantity }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700 text-right">{{ $product->reorder_level }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                @if ($product->stock_quantity <= $product->reorder_level)
-                                    <span class="px-2 py-1 text-xs font-semibold bg-red-100 text-red-800 rounded-full">Low Stock</span>
+                            <td class="px-6 py-4 whitespace-nowrap"><center>
+                                @if ($product->status !== 'active')
+                                    <span class="px-2 py-1 text-xs font-semibold bg-red-100 text-red-800 rounded-full">Inactive</span>
                                 @else
-                                    <span class="px-2 py-1 text-xs font-semibold bg-green-100 text-green-800 rounded-full">OK</span>
+                                    <span class="px-2 py-1 text-xs font-semibold bg-green-100 text-green-800 rounded-full">Active</span>
                                 @endif
+                            </center>
                             </td>
                         </tr>
                     @empty

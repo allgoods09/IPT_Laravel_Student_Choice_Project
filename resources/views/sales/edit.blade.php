@@ -6,7 +6,7 @@
         <div class="flash-error mb-5">{{ $errors->first() }}</div>
     @endif
 
-    <div class="max-w-xl">
+    <div class="max-w-xl mx-auto">
         <div class="card p-8">
 
             {{-- Sale info banner --}}
@@ -25,13 +25,13 @@
                 <div>
                     <label class="input-label">Quantity *</label>
                     <input type="number" name="quantity" min="1" max="{{ $sale->product->stock_quantity + $sale->quantity }}"
-                        value="{{ old('quantity', $sale->quantity) }}" id="qtyInput" oninput="updateTotal()" class="text-input" required>
+                        value="{{ old('quantity', $sale->quantity) }}" id="qtyInput" oninput="updateTotal()" class="text-input w-full px-4 py-3 text-base rounded-md border border-slate-300 focus:ring focus:ring-indigo-200 focus:border-indigo-500" required>
                     <p class="text-xs text-slate-400 mt-1">Originally: {{ $sale->quantity }} units</p>
                 </div>
 
                 <div>
                     <label class="input-label">Payment Method *</label>
-                    <select name="payment_method" class="text-input" required>
+                    <select name="payment_method" class="text-input w-full px-4 py-3 text-base rounded-md border border-slate-300 focus:ring focus:ring-indigo-200 focus:border-indigo-500" required>
                         @foreach (['Cash','GCash','PayMaya','Credit Card','Debit Card','Bank Transfer'] as $pm)
                             <option value="{{ $pm }}" {{ old('payment_method', $sale->payment_method) == $pm ? 'selected' : '' }}>{{ $pm }}</option>
                         @endforeach

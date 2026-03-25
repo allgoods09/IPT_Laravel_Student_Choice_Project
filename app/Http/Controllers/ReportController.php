@@ -38,7 +38,6 @@ class ReportController extends Controller
                 break;
             case 'products':
                 $data = Product::with('category')
-                    ->where('status', 'active')
                     ->orderBy('stock_quantity')
                     ->get();
                 break;
@@ -76,7 +75,6 @@ class ReportController extends Controller
                 break;
             case 'products':
                 $data = Product::with('category')
-                    ->where('status', 'active')
                     ->orderBy('stock_quantity')
                     ->get();
                 break;
@@ -115,6 +113,11 @@ class ReportController extends Controller
         $monthStart = Carbon::parse($month)->startOfMonth();
         $monthEnd = Carbon::parse($month)->endOfMonth();
 
+        // If "Send to All" clicked
+        if ($request->has('send_all')) {
+            $recipients = \App\Models\User::pluck('email')->toArray();
+        }
+
         // Same data query as pdf
         switch ($type) {
             case 'sales':
@@ -125,7 +128,6 @@ class ReportController extends Controller
                 break;
             case 'products':
                 $data = Product::with('category')
-                    ->where('status', 'active')
                     ->orderBy('stock_quantity')
                     ->get();
                 break;
@@ -147,10 +149,13 @@ class ReportController extends Controller
         $pdfContent = $pdf->output();
 
 
-        SendReportEmailsJob::dispatch($type, $month, $recipients);
+        foreach ($recipients as $index => $recipient) {
+            SendReportEmailsJob::dispatch($type, $month, $recipient)
+            ->delay(now()->addSeconds($index * 20)); // 10s interval
+        }
 
 
-        return back()->with('success', 'Report emailed successfully.');
+        return back()->with('success', 'Report(s) is/are being sent. Emails will arrive shortly.');
     }
 
 }

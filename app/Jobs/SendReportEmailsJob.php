@@ -22,13 +22,13 @@ class SendReportEmailsJob implements ShouldQueue
 
     protected $type;
     protected $month;
-    protected $recipients;
+    protected $recipient;
 
-    public function __construct($type, $month, $recipients)
+    public function __construct($type, $month, $recipient)
     {
         $this->type = $type;
         $this->month = $month;
-        $this->recipients = $recipients;
+        $this->recipient = $recipient;
     }
 
     public function handle(): void
@@ -76,19 +76,14 @@ class SendReportEmailsJob implements ShouldQueue
 
         $pdfContent = $pdf->output();
 
-        foreach ($this->recipients as $recipient) {
-
-            Mail::to($recipient)->send(
-                new ReportMailable(
-                    $pdfContent,
-                    ucfirst($this->type) . ' Report - ' . Carbon::parse($this->month)->format('F Y'),
-                    $this->type,
-                    $data,
-                    $this->month
-                )
-            );
-
-            sleep(10);
-        }
+        Mail::to($this->recipient)->send(
+            new ReportMailable(
+                $pdfContent,
+                ucfirst($this->type) . ' Report - ' . Carbon::parse($this->month)->format('F Y'),
+                $this->type,
+                $data,
+                $this->month
+            )
+        );
     }
 }

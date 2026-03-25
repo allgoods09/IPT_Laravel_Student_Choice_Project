@@ -16,7 +16,7 @@
 
     {{-- Flash messages --}}
     @if (session('msg'))
-        <div class="mb-5 flash-{{ session('msg') === 'deleted' ? 'error' : 'success' }}">
+        <div id="flash-message" class="mb-5 flash-{{ session('msg') === 'deleted' ? 'error' : 'success' }}">
             {{ session('msg') === 'saved' ? '✓ Category saved successfully.' : '✓ Category deleted.' }}
         </div>
     @endif
@@ -26,7 +26,7 @@
         {{-- Search --}}
         <form method="GET" action="{{ route('categories.index') }}" class="flex flex-wrap gap-3 mb-6">
             <input type="text" name="search" placeholder="Search categories..."
-                   value="{{ $search }}" class="max-w-xs">
+                   value="{{ $search }}" class="max-w-xs text-base rounded-md border border-slate-300 focus:ring focus:ring-indigo-200 focus:border-indigo-500">
 
             <button type="submit" class="btn-primary px-4 py-2 rounded-xl text-sm font-semibold">
                 Search
@@ -105,6 +105,16 @@
                 </tbody>
             </table>
         </div>
-
     </div>
+    <script>
+        setTimeout(() => {
+            const flash = document.getElementById('flash-message');
+            if (flash) {
+                flash.style.transition = "opacity 0.5s ease";
+                flash.style.opacity = "0";
+                
+                setTimeout(() => flash.remove(), 500); // remove after fade
+            }
+        }, 1500); // 3 seconds
+    </script>
 </x-app-layout>

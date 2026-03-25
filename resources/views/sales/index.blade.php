@@ -40,7 +40,8 @@
         {{-- Search --}}
         <form method="GET" action="{{ route('sales.index') }}" class="flex flex-wrap gap-3 mb-6">
             <input type="text" name="search" placeholder="Search by product…"
-                   value="{{ $search }}" class="max-w-xs">
+                   value="{{ $search }}" class="max-w-xs text-base rounded-md border border-slate-300 focus:ring focus:ring-indigo-200 focus:border-indigo-500">
+                   
 
             <button type="submit" class="btn-primary px-4 py-2 rounded-xl text-sm font-semibold">
                 Search
@@ -74,7 +75,7 @@
                 <tbody>
                     @forelse ($sales as $i => $s)
                         <tr class="table-row border-b border-slate-50">
-                            <td class="py-3 px-4 text-slate-400 font-mono text-xs">{{ $i + 1 }}</td>
+                            <td class="py-3 px-4 text-slate-400 font-mono text-xs">{{ $s->id }}</td>
                             <td class="py-3 px-4 font-semibold text-slate-800">{{ $s->product->name }}</td>
                             <td class="py-3 px-4 text-right text-slate-600">{{ $s->quantity }}</td>
                             <td class="py-3 px-4 text-right text-slate-500">₱{{ number_format($s->price, 2) }}</td>
