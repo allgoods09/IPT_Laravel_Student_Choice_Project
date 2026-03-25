@@ -59,7 +59,8 @@ class CategoryController extends Controller
     public function destroy(Category $category)
     {
         // Soft-deactivate, matching original behaviour
-        $category->update(['status' => 'Inactive']);
+        // $category->update(['status' => 'Inactive']);
+        $category->delete();
 
         return redirect()->route('categories.index')->with('msg', 'deleted');
     }

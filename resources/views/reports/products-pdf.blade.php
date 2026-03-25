@@ -1,59 +1,130 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <title>Products Report - {{ \Illuminate\Support\Carbon::parse($month)->format('F Y') }}</title>
-    <style>
-        body { font-family: Arial, sans-serif; font-size: 12px; margin: 20px; color: #333; }
-        .header { text-align: center; margin-bottom: 30px; }
-        .header h1 { margin: 0; color: #1f2937; }
-        .header p { margin: 5px 0; color: #6b7280; }
-        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb; }
-        th { background-color: #f9fafb; font-weight: bold; }
-        .low-stock { background-color: #fee2e2; color: #dc2626; }
-        .amount { text-align: right; }
-        .summary { display: flex; justify-content: space-between; margin-top: 20px; padding: 20px; background: #f3f4f6; border-radius: 8px; }
-        @media print { body { margin: 0; } }
-    </style>
+<meta charset="utf-8">
+<title>Products Report</title>
+
+<style>
+body {
+    font-family: 'DejaVu Sans', Arial, sans-serif;
+    font-size: 12px;
+    margin: 30px;
+    background: #ffffff;
+    color: #091a2a;
+}
+
+.header { text-align: center; margin-bottom: 20px; }
+.header h1 {
+            margin: 0;
+            font-size: 20px;
+            color: #091a2a;
+        }
+
+        .header h2 {
+            margin: 4px 0;
+            font-size: 15px;
+            font-weight: normal;
+            color: #009d57;
+        }
+.header p { margin: 2px 0; font-size: 11px; color: #64748b; }
+
+.divider {
+    height: 3px;
+    background: #009d57;
+    margin: 15px 0 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    background: #091a2a;
+    color: #fff;
+    padding: 10px;
+    font-size: 11px;
+    text-transform: uppercase;
+}
+
+td {
+    padding: 10px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+tr:nth-child(even) { background: #f8fafc; }
+
+.low-stock {
+    background: #fff5f5 !important;
+    color: #b91c1c;
+    font-weight: 600;
+}
+
+.amount { text-align: right; }
+
+.summary {
+    margin-top: 20px;
+    padding: 14px;
+    border-left: 5px solid #009d57;
+    background: #f8fafc;
+}
+
+.footer {
+    margin-top: 30px;
+    text-align: right;
+    font-size: 10px;
+    color: #94a3b8;
+}
+</style>
 </head>
+
 <body>
-    <div class="header">
-        <h1>Products Report (Inventory)</h1>
-        <p>{{ \Illuminate\Support\Carbon::parse($month)->format('F Y') }} snapshot</p>
-        <p>Generated on {{ now()->format('M d, Y H:i') }}</p>
-    </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Product</th>
-                <th>Category</th>
-                <th class="amount">Stock</th>
-                <th class="amount">Reorder Level</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse ($data as $product)
-                <tr @if($product->stock_quantity <= $product->reorder_level) class="low-stock" @endif>
-                    <td>{{ $product->name }}</td>
-                    <td>{{ $product->category->name ?? 'Uncategorized' }}</td>
-                    <td class="amount">{{ $product->stock_quantity }}</td>
-                    <td class="amount">{{ $product->reorder_level }}</td>
-                    <td>{{ $product->stock_quantity <= $product->reorder_level ? 'Low Stock' : 'OK' }}</td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="5" style="text-align: center; color: #6b7280;">No products found.</td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
+<div class="header">
+    <h1>StockFlow Inventory System</h1>
+    <h2>Products Report</h2>
+    <p>{{ \Illuminate\Support\Carbon::parse($month)->format('F Y') }}</p>
+    <p>Generated on {{ now()->format('M d, Y H:i') }}</p>
+</div>
 
-    <div class="summary">
-        <div>Total Products: {{ $data->count() }}</div>
-        <div>Low Stock: {{ $data->filter(fn($p) => $p->stock_quantity <= $p->reorder_level)->count() }}</div>
-    </div>
+<div class="divider"></div>
+
+<table>
+<thead>
+<tr>
+    <th>Product</th>
+    <th>Category</th>
+    <th class="amount">Stock</th>
+    <th class="amount">Reorder</th>
+    <th>Status</th>
+</tr>
+</thead>
+
+<tbody>
+@forelse ($data as $product)
+<tr @if($product->stock_quantity <= $product->reorder_level) class="low-stock" @endif>
+    <td>{{ $product->name }}</td>
+    <td>{{ $product->category->name ?? 'Uncategorized' }}</td>
+    <td class="amount">{{ $product->stock_quantity }}</td>
+    <td class="amount">{{ $product->reorder_level }}</td>
+    <td><center>{{ $product->stock_quantity <= $product->reorder_level ? 'Low Stock' : 'OK' }}</center></td>
+</tr>
+@empty
+<tr>
+    <td colspan="5" style="text-align:center;color:#94a3b8;">No products found.</td>
+</tr>
+@endforelse
+</tbody>
+</table>
+
+<div class="summary">
+    Total Products: {{ $data->count() }} |
+    Low Stock: {{ $data->filter(fn($p) => $p->stock_quantity <= $p->reorder_level)->count() }}
+</div>
+
+<div class="footer">
+    StockFlow Inventory System • Generated Report
+</div>
+
 </body>
 </html>

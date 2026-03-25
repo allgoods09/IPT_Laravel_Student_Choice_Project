@@ -48,6 +48,7 @@ class LogController extends Controller
     public function destroy(Log $log)
     {
         $log->delete();
+        return redirect()->route('logs.index')->with('msg', 'deleted');
         return response()->json(null, 204);
     }
 }

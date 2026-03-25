@@ -42,8 +42,8 @@ class ReportController extends Controller
                     ->get();
                 break;
             case 'categories':
-                $data = Category::where('status', 'Active')
-                    ->withCount('products')
+                $data = Category::
+                    withCount('products')
                     ->orderBy('name')
                     ->get();
                 break;
@@ -80,8 +80,8 @@ class ReportController extends Controller
                     ->get();
                 break;
             case 'categories':
-                $data = Category::where('status', 'Active')
-                    ->withCount('products')
+                $data = Category::
+                    withCount('products')
                     ->orderBy('name')
                     ->get();
                 break;
@@ -120,8 +120,8 @@ class ReportController extends Controller
                     ->get();
                 break;
             case 'categories':
-                $data = Category::where('status', 'Active')
-                    ->withCount('products')
+                $data = Category::
+                    withCount('products')
                     ->orderBy('name')
                     ->get();
                 break;
@@ -137,7 +137,7 @@ class ReportController extends Controller
         $pdf = Pdf::loadView("reports.{$type}-pdf", compact('data', 'month', 'type'));
         $pdfContent = $pdf->output();
 
-        \Illuminate\Support\Facades\Mail::to($user)->send(new \App\Mail\ReportMailable($pdfContent, ucfirst($type) . ' Report - ' . Carbon::parse($month)->format('F Y'), $type));
+        Mail::to($user)->send(new \App\Mail\ReportMailable($pdfContent, ucfirst($type) . ' Report - ' . Carbon::parse($month)->format('F Y'), $type));
 
         return back()->with('success', 'Report emailed to ' . $user->name);
     }

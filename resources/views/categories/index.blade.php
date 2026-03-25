@@ -17,7 +17,7 @@
     {{-- Flash messages --}}
     @if (session('msg'))
         <div class="mb-5 flash-{{ session('msg') === 'deleted' ? 'error' : 'success' }}">
-            {{ session('msg') === 'saved' ? '✓ Category saved successfully.' : '✓ Category deactivated.' }}
+            {{ session('msg') === 'saved' ? '✓ Category saved successfully.' : '✓ Category deleted.' }}
         </div>
     @endif
 
@@ -58,7 +58,7 @@
                 <tbody>
                     @forelse ($categories as $i => $cat)
                         <tr class="table-row border-b border-slate-50">
-                            <td class="py-3 px-4 text-slate-400 font-mono text-xs">{{ $i + 1 }}</td>
+                            <td class="py-3 px-4 text-slate-400 font-mono text-xs">{{ $cat->id }}</td>
 
                             <td class="py-3 px-4 font-semibold text-slate-800">{{ $cat->name }}</td>
 

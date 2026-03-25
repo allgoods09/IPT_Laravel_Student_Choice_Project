@@ -91,7 +91,8 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         // Soft-deactivate instead of hard delete, matching original behaviour
-        $product->update(['status' => 'Inactive']);
+        // $product->update(['status' => 'Inactive']);
+        $product->delete();
 
         return redirect()->route('products.index')->with('msg', 'deleted');
     }

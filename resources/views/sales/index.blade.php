@@ -93,11 +93,17 @@
                                            class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 transition">
                                             Edit
                                         </a>
-                                        <a href="{{ route('sales.index') }}?delete={{ $s->id }}" 
-                                           onclick="return confirm('Delete this sale? Stock will be restored.')" 
-                                           class="btn-danger text-xs font-semibold px-3 py-1.5 rounded-lg transition">
-                                            Delete
-                                        </a>
+                                        <form action="{{ route('sales.destroy', $s) }}" method="POST" 
+      onsubmit="return confirm('Delete this sale? Stock will be restored.')" 
+      class="inline">
+    @csrf
+    @method('DELETE')
+
+    <button type="submit"
+        class="btn-danger text-xs font-semibold px-3 py-1.5 rounded-lg transition">
+        Delete
+    </button>
+</form>
                                     </div>
                                 </td>
                             @endif

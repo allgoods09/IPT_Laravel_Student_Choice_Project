@@ -20,7 +20,7 @@ return new class extends Migration
             $table->decimal('selling_price', 10, 2);
             $table->integer('stock_quantity');
             $table->integer('reorder_level');
-            $table->string('status', 20);
+            $table->enum('status', ['active', 'inactive']);
             $table->timestamps();
         });
     }

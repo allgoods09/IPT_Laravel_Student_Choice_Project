@@ -1,60 +1,128 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <title>Logs Report - {{ \Illuminate\Support\Carbon::parse($month)->format('F Y') }}</title>
-    <style>
-        body { font-family: Arial, sans-serif; font-size: 12px; margin: 20px; color: #333; }
-        .header { text-align: center; margin-bottom: 30px; }
-        .header h1 { margin: 0; color: #1f2937; }
-        .header p { margin: 5px 0; color: #6b7280; }
-        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        th, td { padding: 8px 10px; text-align: left; border: 1px solid #e5e7eb; }
-        th { background-color: #f9fafb; font-weight: bold; }
-        td { vertical-align: top; }
-        .message { max-width: 300px; word-wrap: break-word; }
-        .summary { margin-top: 20px; padding: 12px; background: #f3f4f6; border-radius: 8px; font-weight: bold; }
-        @media print { body { margin: 0; } }
-    </style>
+<meta charset="utf-8">
+<title>Logs Report</title>
+
+<style>
+body {
+    font-family: 'DejaVu Sans', Arial, sans-serif;
+    font-size: 12px;
+    margin: 30px;
+    color: #091a2a;
+}
+
+.header { text-align: center; margin-bottom: 20px; }
+.header h1 {
+            margin: 0;
+            font-size: 20px;
+            color: #091a2a;
+        }
+
+        .header h2 {
+            margin: 4px 0;
+            font-size: 15px;
+            font-weight: normal;
+            color: #009d57;
+        }
+.header p { margin: 2px 0; font-size: 11px; color: #64748b; }
+
+.divider {
+    height: 3px;
+    background: #009d57;
+    margin: 15px 0 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    background: #091a2a;
+    color: white;
+    padding: 10px;
+    font-size: 11px;
+    text-transform: uppercase;
+}
+
+td {
+    padding: 10px;
+    border-bottom: 1px solid #e2e8f0;
+    vertical-align: top;
+}
+
+tr:nth-child(even) { background: #f8fafc; }
+
+.message {
+    max-width: 250px;
+    word-wrap: break-word;
+}
+
+.summary {
+    margin-top: 20px;
+    padding: 14px;
+    border-left: 5px solid #009d57;
+    background: #f8fafc;
+}
+
+.footer {
+    margin-top: 30px;
+    text-align: right;
+    font-size: 10px;
+    color: #94a3b8;
+}
+</style>
 </head>
+
 <body>
-    <div class="header">
-        <h1>Logs Report</h1>
-        <p>{{ \Illuminate\Support\Carbon::parse($month)->format('F Y') }}</p>
-        <p>Generated on {{ now()->format('M d, Y H:i') }}</p>
-    </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>User</th>
-                <th>Action</th>
-                <th>Entity Type</th>
-                <th>Entity ID</th>
-                <th>Description</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse ($data as $log)
-                <tr>
-                    <td>{{ $log->created_at->format('M d, Y H:i') }}</td>
-                    <td>{{ $log->user?->name ?? 'System' }}</td>
-                    <td>{{ $log->action ?? 'N/A' }}</td>
-                    <td>{{ $log->entity_type ?? 'N/A' }}</td>
-                    <td>{{ $log->entity_id ?? 'N/A' }}</td>
-                    <td class="message">{{ $log->description ?? 'N/A' }}</td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="6" style="text-align: center; color: #6b7280;">No logs found for this month.</td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
+<div class="header">
+    <h1>StockFlow Inventory System</h1>
+    <h2>Logs Report</h2>
+    <p>{{ \Illuminate\Support\Carbon::parse($month)->format('F Y') }}</p>
+    <p>Generated on {{ now()->format('M d, Y H:i') }}</p>
+</div>
 
-    <div class="summary">
-        Total Logs: {{ $data->count() }}
-    </div>
+<div class="divider"></div>
+
+<table>
+<thead>
+<tr>
+    <th>Date</th>
+    <th>User</th>
+    <th>Action</th>
+    <th>Entity</th>
+    <th>ID</th>
+    <th>Description</th>
+</tr>
+</thead>
+
+<tbody>
+@forelse ($data as $log)
+<tr>
+    <td>{{ $log->created_at->format('M d, Y H:i') }}</td>
+    <td>{{ $log->user?->name ?? 'System' }}</td>
+    <td>{{ $log->action }}</td>
+    <td>{{ $log->entity_type }}</td>
+    <td>{{ $log->entity_id }}</td>
+    <td class="message">{{ $log->description }}</td>
+</tr>
+@empty
+<tr>
+    <td colspan="6" style="text-align:center;color:#94a3b8;">No logs found.</td>
+</tr>
+@endforelse
+</tbody>
+</table>
+
+<div class="summary">
+    Total Logs: {{ $data->count() }}
+</div>
+
+<div class="footer">
+    StockFlow Inventory System • Generated Report
+</div>
+
 </body>
 </html>

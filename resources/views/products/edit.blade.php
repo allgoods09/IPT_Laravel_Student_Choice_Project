@@ -67,14 +67,8 @@
                     <div>
                         <label>Status</label>
                         <select name="status">
-                            <option value="Active"
-                                {{ old('status', $product->status) === 'Active' ? 'selected' : '' }}>
-                                Active
-                            </option>
-                            <option value="Inactive"
-                                {{ old('status', $product->status) === 'Inactive' ? 'selected' : '' }}>
-                                Inactive
-                            </option>
+                            <option value="Active"   {{ old('status', $product->status) === 'Active'   ? 'selected' : '' }}>Active</option>
+                            <option value="Inactive" {{ old('status', $product->status) === 'Inactive' ? 'selected' : '' }}>Inactive</option>
                         </select>
                     </div>
                 </div>

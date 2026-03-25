@@ -17,7 +17,7 @@
     {{-- Flash messages --}}
     @if (session('msg'))
         <div class="mb-5 flash-{{ session('msg') === 'deleted' ? 'error' : 'success' }}">
-            {{ session('msg') === 'saved' ? '✓ Product saved.' : '✓ Product deactivated.' }}
+            {{ session('msg') === 'saved' ? '✓ Product saved.' : '✓ Product deleted.' }}
         </div>
     @endif
 
@@ -68,7 +68,7 @@
                 <tbody>
                     @forelse ($products as $i => $p)
                         <tr class="table-row border-b border-slate-50">
-                            <td class="py-3 px-4 text-slate-400 font-mono text-xs">{{ $i + 1 }}</td>
+                            <td class="py-3 px-4 text-slate-400 font-mono text-xs">{{ $p->id }}</td>
 
                             <td class="py-3 px-4">
                                 <div class="font-semibold text-slate-800">{{ $p->name }}</div>
@@ -111,7 +111,7 @@
                                         </a>
 
                                         <form method="POST" action="{{ route('products.destroy', $p) }}"
-                                              onsubmit="return confirm('Deactivate this product?')">
+                                              onsubmit="return confirm('Delete this product?')">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"
