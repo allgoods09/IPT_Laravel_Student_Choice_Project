@@ -13,6 +13,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use App\Mail\ReportMailable;
+use App\Jobs\SendReportEmailsJob;
 
 class ReportController extends Controller
 {
@@ -98,9 +99,18 @@ class ReportController extends Controller
         return $pdf->download("{$type}_report_{$month}.pdf");
     }
 
-    public function email(string $type, int $userId, Request $request)
+    public function recipient(string $type, Request $request)
     {
-        $user = User::findOrFail($userId);
+        $month = $request->get('month') ?? now()->format('Y-m');
+        $users = User::orderBy('name')->get();
+
+        return view('reports.recipient', compact('type', 'month', 'users'));
+    }
+
+
+    public function email(string $type, Request $request)
+    {
+        $recipients = $request->input('recipients', []);
         $month = $request->get('month') ?? now()->format('Y-m');
         $monthStart = Carbon::parse($month)->startOfMonth();
         $monthEnd = Carbon::parse($month)->endOfMonth();
@@ -120,8 +130,7 @@ class ReportController extends Controller
                     ->get();
                 break;
             case 'categories':
-                $data = Category::
-                    withCount('products')
+                $data = Category::withCount('products')
                     ->orderBy('name')
                     ->get();
                 break;
@@ -137,8 +146,11 @@ class ReportController extends Controller
         $pdf = Pdf::loadView("reports.{$type}-pdf", compact('data', 'month', 'type'));
         $pdfContent = $pdf->output();
 
-        Mail::to($user)->send(new \App\Mail\ReportMailable($pdfContent, ucfirst($type) . ' Report - ' . Carbon::parse($month)->format('F Y'), $type));
 
-        return back()->with('success', 'Report emailed to ' . $user->name);
+        SendReportEmailsJob::dispatch($type, $month, $recipients);
+
+
+        return back()->with('success', 'Report emailed successfully.');
     }
+
 }

@@ -6,8 +6,8 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
+use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Queue\SerializesModels;
-use Barryvdh\DomPDF\Facade\Pdf;
 
 class ReportMailable extends Mailable
 {
@@ -17,12 +17,15 @@ class ReportMailable extends Mailable
     public $subject;
     public $type;
 
-    public function __construct($pdfContent, $subject, $type = 'report')
+    public function __construct($pdfContent, $subject, $type = 'report', $data = [], $month = null)
     {
         $this->pdfContent = $pdfContent;
         $this->subject = $subject;
         $this->type = $type;
+        $this->data = $data;
+        $this->month = $month;
     }
+
 
     public function envelope(): Envelope
     {
@@ -34,19 +37,21 @@ class ReportMailable extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.report',
+           view: "emails.{$this->type}",
+            with: [
+                'data' => $this->data,
+                'month' => $this->month,
+                'type' => $this->type,
+            ],
+
         );
     }
 
     public function attachments(): array
     {
         return [
-            [
-                'content' => $this->pdfContent,
-                'mime' => 'application/pdf',
-                'as' => $this->type . '_report.pdf',
-            ],
+            Attachment::fromData(fn () => $this->pdfContent, $this->type . '_report.pdf')
+                ->withMime('application/pdf'),
         ];
     }
 }
-

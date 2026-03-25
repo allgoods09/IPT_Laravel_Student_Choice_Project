@@ -72,6 +72,14 @@
                 <div class="text-slate-500">{{ $data->count() }} transactions</div>
             </div>
             <div class="flex gap-3 w-full lg:w-auto">
+                <a href="{{ route('reports.recipient', ['type' => $type, 'month' => $month]) }}" 
+                class="flex-1 lg:flex-none btn-secondary px-6 py-3 rounded-xl font-semibold flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12H8m0 0l4-4m-4 4l4 4" />
+                    </svg>
+                    Mail To
+                </a>
+
                 <a href="{{ route('reports.pdf', ['type' => $type, 'month' => $month]) }}" 
                    class="flex-1 lg:flex-none btn-primary px-6 py-3 rounded-xl font-semibold flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

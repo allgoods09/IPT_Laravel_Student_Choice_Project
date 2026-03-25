@@ -57,8 +57,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('logs', LogController::class);
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
     Route::get('/reports/{type}', [ReportController::class, 'show'])->name('reports.show');
+    Route::get('/reports/{type}/recipient', [ReportController::class, 'recipient'])->name('reports.recipient');
     Route::get('/reports/{type}/pdf', [ReportController::class, 'pdf'])->name('reports.pdf');
-    Route::get('/reports/{type}/mail/{user}', [ReportController::class, 'email'])->name('reports.mail');
+    Route::post('/reports/{type}/mail', [ReportController::class, 'email'])->name('reports.mail');
 });
 
 require __DIR__.'/auth.php';
