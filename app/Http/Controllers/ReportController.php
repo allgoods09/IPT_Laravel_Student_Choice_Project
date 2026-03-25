@@ -38,12 +38,14 @@ class ReportController extends Controller
                 break;
             case 'products':
                 $data = Product::with('category')
+                    ->whereBetween('created_at', [$monthStart, $monthEnd])
                     ->orderBy('stock_quantity')
                     ->get();
                 break;
             case 'categories':
                 $data = Category::
                     withCount('products')
+                    ->whereBetween('created_at', [$monthStart, $monthEnd])
                     ->orderBy('name')
                     ->get();
                 break;
@@ -75,12 +77,13 @@ class ReportController extends Controller
                 break;
             case 'products':
                 $data = Product::with('category')
+                    ->whereBetween('created_at', [$monthStart, $monthEnd])
                     ->orderBy('stock_quantity')
                     ->get();
                 break;
             case 'categories':
-                $data = Category::
-                    withCount('products')
+                $data = Category::withCount('products')
+                    ->whereBetween('created_at', [$monthStart, $monthEnd])
                     ->orderBy('name')
                     ->get();
                 break;
@@ -128,11 +131,13 @@ class ReportController extends Controller
                 break;
             case 'products':
                 $data = Product::with('category')
+                    ->whereBetween('created_at', [$monthStart, $monthEnd])
                     ->orderBy('stock_quantity')
                     ->get();
                 break;
             case 'categories':
                 $data = Category::withCount('products')
+                    ->whereBetween('created_at', [$monthStart, $monthEnd])
                     ->orderBy('name')
                     ->get();
                 break;

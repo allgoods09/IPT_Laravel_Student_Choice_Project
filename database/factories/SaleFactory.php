@@ -29,6 +29,7 @@ class SaleFactory extends Factory
             'total_amount' => $total_amount,
             'payment_method' => $this->faker->randomElement(['cash', 'card', 'mpesa', 'bank_transfer']),
             'sale_date' => $this->faker->dateTimeBetween('-30 days', 'now'),
+            'created_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
         ];
     }
 }

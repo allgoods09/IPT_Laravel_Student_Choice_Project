@@ -38,6 +38,7 @@ class ProductFactory extends Factory
             'stock_quantity' => $this->faker->numberBetween(1, 500),
             'reorder_level' => $this->faker->numberBetween(10, 50),
             'status' => $this->faker->randomElement(['active', 'inactive']),
+            'created_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
         ];
     }
 }

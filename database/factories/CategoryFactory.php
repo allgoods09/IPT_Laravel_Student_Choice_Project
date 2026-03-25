@@ -28,6 +28,7 @@ class CategoryFactory extends Factory
             'name' => $this->faker->randomElement($names),
             'description' => $this->faker->sentence(8),
             'status' => $this->faker->randomElement(['active', 'inactive']),
+            'created_at' => $this->faker->dateTimeBetween('-1year', 'now'),
         ];
     }
 }
